@@ -7,7 +7,7 @@ int main() {
     int age;
     double height;
 
-    cout << "I am making a change in this "
+    cout << "I am making a change in this ";
 
     cout << "Enter your first name:" << endl;
     cin >> first_name;
