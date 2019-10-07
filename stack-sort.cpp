@@ -34,6 +34,12 @@ int main(int argc, char* argv[]) {
         cout << "Could not open file " << argv[1] << endl;
         return 1;
     }
+    cout << "Reading the file. " << endl;
+    inFS >> filenum1;
+    cout << "Closing file." << endl;
+    inFS.close();
+
+    cout << "Output value: " 
 
 
 
