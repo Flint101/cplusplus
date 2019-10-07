@@ -1,20 +1,40 @@
 #include<iostream>
 #include<stack>
-#include<string>
 #include<fstream>
 
 using namespace std;
 
-void sortStack(stack<int>& s) {
-    //if number of elements in stack is smaller than 2, return
-    //if not store top element of the stack in variable and remove it from the stack
-    //repeat following steps until done:
-        //recursively sort the remaining stack
-        //if separate stored element is smaller than current top element of the stack, put stored element on top of stack
-        //else exchange top element and stored element and continue
+//Function to insert he stored value 
+void stackInsert(stack<int>& s, int stored) {
+    if (s.empty() || stored < s.top()) {
+        s.push(stored);
+        return;
+    }
+    else {
+        int temp = s.top();
+        s.pop();
+        stackInsert(s, stored);
+        s.push(temp);
+    }
 }
 
+//Function to sort the stack
+void sortStack(stack<int>& s) {
+    if (!s.empty()) {
+        int stored = s.top();
+        s.pop();
+        sortStack(s);
+        stackInsert(s, stored);
+        }
+}
 
+void printStack(stack<int> s) {
+    while (!s.empty()) {
+        cout << s.top() << " ";
+        s.pop();
+    }
+    cout << endl;
+}
 
 int main(int argc, char* argv[]) {
     string inFile = "";
@@ -27,27 +47,23 @@ int main(int argc, char* argv[]) {
     }
    
     ifstream inFS;
-    cout << "Opening file " << argv[1] << endl;
-
     inFS.open(argv[1]);
     if (!inFS.is_open()) {
-        cout << "Could not open file " << argv[1] << endl;
+        cout << "an error occured: could not open input file " << argv[1] << endl;
         return 1;
     }
-    cout << "Reading the file. " << endl;
-    inFS >> filenum1;
-    cout << "Closing file." << endl;
+
+    int num;
+    stack<int> s;
+
+    while (inFS >> num) {
+        s.push(num);
+    }
+    
     inFS.close();
 
-    cout << "Output value: " 
+    sortStack(s);
+    printStack(s);
 
-
-
-    /*if (argc < 2) {
-        cerr << "Usage: " << argv[0] << " NAME" << endl;
-        return 1;
-    }
-
-    cout << argv[0] << " says hello, " << argv[1] << "!" << endl;*/
     return 0;
 }

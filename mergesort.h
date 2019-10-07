@@ -3,69 +3,47 @@
 using namespace std;
 
 //Merging vectors
-template <typename T> void merge(const vector<T>& unsorted, unsigned int firstToSort, unsigned int lastToSort, vector<T>& sorted) {
-    cout << "Calling merge " << endl;
+template <typename T> void merge(unsigned int firstToSort, int mid, unsigned int lastToSort, vector<T>& sorted) {
+    vector<T> temp(lastToSort - firstToSort + 1);
 
-    for (int i = 0; i < sorted.size(); ++i) {
-        cout << sorted.at(i) << " ";
-    }
-    cout << endl;
-    int mid = (firstToSort + lastToSort) / 2;
-    cout << "mid merge = " << mid << " firstToSort: " << firstToSort << endl;
-    int leftindex = firstToSort, rightindex = mid + 1, sortedindex = firstToSort;
-    //vector<T> temp;
+    int i = 0, j = firstToSort, k = mid + 1;
 
-    while (leftindex <= mid && rightindex <= lastToSort) {
-        cout << "leftindex: " << leftindex << endl;
-        if (unsorted.at(leftindex) < unsorted.at(rightindex)) {
-            cout << "if " << unsorted.at(leftindex) << " < " << unsorted.at(rightindex) << " firstToSort " << firstToSort << endl;
-            sorted.at(sortedindex++) = unsorted.at(leftindex++);
+    while (j <= mid && k <= lastToSort) {
+        if (sorted.at(j) < sorted.at(k)) {
+              temp.at(i++) = sorted.at(j++);
         }
         else {
-            cout << "Else statement: sorted.at(sortedindex++) " << sortedindex << " = unsorted.at(rightindex) " << unsorted.at(rightindex) << endl;
-            sorted.at(sortedindex++) = unsorted.at(rightindex++);
+            temp.at(i++) = sorted.at(k++);
             
         }
     }
 
-    while (leftindex <= mid) {
-        //cout << "while leftindex <= mid CALLED" << endl;
-        cout << "sorted.at(sortedindex): " << sortedindex << " = unsorted.at(leftindex) " << unsorted.at(leftindex) << endl;
-        sorted.at(sortedindex++) = unsorted.at(leftindex++);
+    while (j <= mid) {
+        temp.at(i++) = sorted.at(j++);
     }
-    while (rightindex <= lastToSort) {
-        //cout << "while rightindex <= lastToSort CALLED" << endl;
-        cout << "sorted.at( " << sortedindex << " ) = " << unsorted.at(rightindex) << endl;
-        sorted.at(sortedindex++) = unsorted.at(rightindex++);
+    while (k <= lastToSort) {
+        temp.at(i++) = sorted.at(k++);
     }
-   /* for (i = 0; i < sorted.size(); ++i) {
+    for (i = 0; i < temp.size(); ++i) {
         sorted.at(firstToSort + i) = temp.at(i);
-    }*/
+    }
 }
 
 //Dividing the vectors until size is one
 template <typename T> void mergeSort(const vector<T>& unsorted, unsigned int firstToSort, unsigned int lastToSort, vector<T>& sorted) {
-    cout << "Calling mergeSort with firstToSort: " << firstToSort << " and lastToSort: " << lastToSort << endl;
     
-    if (lastToSort == firstToSort) {
+    if (firstToSort == lastToSort) {
+        sorted.at(firstToSort) = unsorted.at(firstToSort);
         return;
     }
-    
-    int mid = (firstToSort + lastToSort) / 2;
-    cout << "Mid mergeSort = " << mid << endl;
+    else {
+        int mid = (firstToSort + lastToSort) / 2;
 
-    mergeSort(unsorted, firstToSort, mid, sorted);
-    mergeSort(unsorted, mid + 1, lastToSort, sorted);
+        mergeSort(unsorted, firstToSort, mid, sorted);
+        mergeSort(unsorted, mid + 1, lastToSort, sorted);
 
-    merge(unsorted, firstToSort, lastToSort, sorted);
-}
-
-//Copying from unsorted to sorted
-/*template <typename T> void mergeSort(const vector<T>& unsorted, unsigned int firstToSort, unsigned int lastToSort, vector<T>& sorted) {
-    for (int i = 0;i < unsorted.size(); ++i) {
-        sorted.at(i) = unsorted.at(i);
+        merge(firstToSort, mid, lastToSort, sorted);
     }
-    mergeSort(firstToSort, lastToSort, sorted);
-}*/
+}
 
 #endif
