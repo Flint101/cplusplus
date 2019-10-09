@@ -6,25 +6,24 @@ using namespace std;
 template <typename T> void merge(unsigned int firstToSort, int mid, unsigned int lastToSort, vector<T>& sorted) {
     vector<T> temp(lastToSort - firstToSort + 1);
 
-    int i = 0, j = firstToSort, k = mid + 1;
+    int sortedindex = 0, leftindex = firstToSort, rightindex = mid + 1;
 
-    while (j <= mid && k <= lastToSort) {
-        if (sorted.at(j) < sorted.at(k)) {
-              temp.at(i++) = sorted.at(j++);
+    while (leftindex <= mid && rightindex <= lastToSort) {
+        if (sorted.at(leftindex) < sorted.at(rightindex)) {
+              temp.at(sortedindex++) = sorted.at(leftindex++);
         }
         else {
-            temp.at(i++) = sorted.at(k++);
-            
+            temp.at(sortedindex++) = sorted.at(rightindex++);
         }
     }
 
-    while (j <= mid) {
-        temp.at(i++) = sorted.at(j++);
+    while (leftindex <= mid) {
+        temp.at(sortedindex++) = sorted.at(leftindex++);
     }
-    while (k <= lastToSort) {
-        temp.at(i++) = sorted.at(k++);
+    while (rightindex <= lastToSort) {
+        temp.at(sortedindex++) = sorted.at(rightindex++);
     }
-    for (i = 0; i < temp.size(); ++i) {
+    for (int i = 0; i < temp.size(); ++i) {
         sorted.at(firstToSort + i) = temp.at(i);
     }
 }
