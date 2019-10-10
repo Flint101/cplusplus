@@ -1,7 +1,7 @@
 #include<vector>
 #include<string>
 #include<iostream>
-#include <stdexcept>
+#include<stdexcept>
 
 using namespace std;
 
@@ -21,7 +21,19 @@ class Stack {
         void push(int);
         // puts a new element on top of the stack
 
-    private:
+        void Print() {
+            cout << "[";
+            for (int i = 0; i < elements.size(); ++i)
+            {
+                cout << elements.at(i);
+                if (i < elements.size() - 1) {
+                    cout << ",";
+                }
+            }
+            cout << "]" << endl;
+        }
+
+     private:
         vector<int> elements;
 };
 
@@ -33,63 +45,78 @@ bool Stack::isEmpty() {
 }
 
 int Stack::pop() {
-    int temp = elements.back(); 
-    elements.pop_back();
     if (elements.size() == 0) {
-        throw runtime_error("stack is emtpy");
-        return 0;
+        throw runtime_error("error: stack is emtpy");
     }
-    return temp;
+    else {
+        int temp = elements.at(0); 
+        elements.erase(elements.begin());
+        return temp;
+    }   
 }
 
 int Stack::top() {
     if (elements.size() > 0) {
-        return elements.back();
+        return elements.at(0);
     } 
     else {
-        throw runtime_error("stack is empty");
+        throw runtime_error("error: stack is empty");
     }
 }
 
 void Stack::push(int input) {
-    elements.push_back(input);
-    cout << input << " pushed in to stack \n";
+    elements.insert(elements.begin(), input);
+    //cout << input << " pushed in to stack \n";
 }
 
-
-
-
-//Asks for user input until input is "end"
-string getUserInput() {
-    string in = "init";
-    while (in != "end") {
-        cout << "stack> ";
-        cin >> in;
-        if (in == "end") {
-            break;
-        }
+bool compareStrings(string s1, string s2) {
+    if (s1.compare(s2) < 0) {
+        return true;
     }
-    return in;
+    return false;
 }
+
 
 int main() {
-    //getUserInput();
-    try {
-        Stack s;
-        s.push(10);
-        s.push(35);
-        cout << s.elements
-        s.isEmpty();
-        s.top();
-        s.pop();
-        s.pop();
-        s.pop();
-        
+    
+    Stack s;
+    string command = "init";
+    string arg;
+
+    while (command != "end" && !cin.eof()) {
+        try {
+            cout << "stack> " << endl;
+            cin >> command;
+
+            if (command == "pop") {
+                cout << s.pop() << endl;
+            }
+            
+            else if (command == "push") {
+                cin >> arg;
+               // cout << "Attempting to convert " << arg << " to number" << endl;
+                s.push(stoi(arg));
+            }
+
+            else if (command == "top") {
+                cout << s.top() << endl;
+            }
+
+            else if (command == "list") {
+                s.Print();
+            }
+            else {
+                cout << "error: invalid command" << endl;
+            }
+        }
+        catch (runtime_error& exception) {
+            cout << exception.what() << endl;
+        }
+        catch (invalid_argument& exception) {
+            cout << "error: not a number" << endl;
+        }
     }
    
-    catch (runtime_error& exception) {
-        cout << exception.what() << endl;
-    }
 
     return 0;
 }
