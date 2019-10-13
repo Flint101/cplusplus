@@ -8,26 +8,30 @@
 using namespace std;
 
 class position {
+    private:
+        int x, y;
+
     public:
-        position();
+        //position();
         position(int x1, int y1) {                                                       //constructor position that sets x and y coordinates
             x = x1; 
             y = y1;
         }
-        int getX() { return x; }
-        int getY() { return y; }
-    private:
-        int x, y;
+        int getX() const { return x; }
+        int getY() const { return y; }
 };
 
 class maze {
+    private:
+        vector<string> line;
+
     public:
-        maze();
+        //maze();
         maze(vector<string> lines) {                                                     //constructor maze that sets the current vector to the vector given as input in the argument
             line = lines;
         }
         bool isWall(position& coordinates) {                                                     //method isWall returning true or false 
-            cout << line.at(coordinates.getX());
+            cout << line.at(coordinates.getX());            //REMOVE
             return line.at(coordinates.getX()).at(coordinates.getY()) == 'l';
         }
         bool isWithinBounds(position& coordinates) {                                             //method isWithinBounds returning true or false
@@ -35,6 +39,7 @@ class maze {
             && coordinates.getY() >= 0 && coordinates.getY() < line.at(coordinates.getX()).length();
         }
         void print(position& playerPosition) {                                                          //method print with input player position
+            cout << "Print called";                         //REMOVE
             for (int i = 0; i < line.size(); ++i) {
                 for (int j = 0; i < line.at(i).length(); ++j) {
                     if (i == playerPosition.getX() && j == playerPosition.getY()) {
@@ -47,55 +52,60 @@ class maze {
                 cout << endl;
             }
         }
-
-    private:
-        vector<string> line;
 };
 
 class gameState {
+    private:
+        maze& mymaze;
+    
     public:
-        //gameState(maze& maze1) : mymaze(maze1) {}
-        gameState(maze maze) {
-            this->mymaze = maze;
-        }
+        gameState(maze maze1) : mymaze(maze1) {}
+        /*gameState(maze& maze1) {
+            mymaze = maze1;
+        }*/
+       
         
-        position performMoves(string moves, position coordinates) {
+        position performMoves(string moves, position& coordinates) {
+            cout << "performMoves" << endl;
             for (int i = 0; i < moves.length(); ++i) {
+                cout << moves.at(i) << endl;
                 coordinates = performMove(moves.at(i), coordinates);
             }
             return coordinates;
         }
         position performMove(char move, position& coordinates) {
-            position nextPosition;
+            //position nextPosition;
             
             switch (move)
             {
             case 'u':
-                nextPosition = position(coordinates.getX() - 1, coordinates.getY());
+                cout << "U";
+                coordinates = position(coordinates.getX() - 1, coordinates.getY());
                 break;
             case 'r':
-                nextPosition = position(coordinates.getX(), coordinates.getY() + 1);
+                cout << "R";
+                coordinates = position(coordinates.getX(), coordinates.getY() + 1);
                 break;
             case 'd':
-                nextPosition = position(coordinates.getX() + 1, coordinates.getY());
+                cout << "D";
+                coordinates = position(coordinates.getX() + 1, coordinates.getY());
                 break;
             case 'l':
-                nextPosition = position(coordinates.getX(), coordinates.getY() - 1);
+                cout << "L";
+                coordinates = position(coordinates.getX(), coordinates.getY() - 1);
                 break;
             default:
                 throw runtime_error("an error occurred: invalid move");
                 break;
             }
-            if (mymaze.isWall(nextPosition)) {
+            if (mymaze.isWall(coordinates)) {
                 throw runtime_error("an error occured: player outside maze or off the path");
             }
-            if (!mymaze.isWithinBounds(nextPosition)) {
+            if (!mymaze.isWithinBounds(coordinates)) {
                 throw runtime_error("an erro occured: player outside maze or off the path");
             }
-            return nextPosition;
+            return coordinates;
         }
-    private:
-        maze mymaze;
 };
 
 
@@ -104,6 +114,10 @@ void stringToInteger(string line, int& first, int& second) {
     stringstream ss;
     ss << line;
     ss >> first >> second;
+    if (ss.fail()) {
+        throw runtime_error("an error occured: could not read height and width of the maze");
+        ss.clear();
+    }
 }
 
 int main(int argc, char* argv[]) {
@@ -156,8 +170,8 @@ int main(int argc, char* argv[]) {
 
         cout << endl;
         
-        //gameState gameState = gameState(maze);
-        position result = state.performMoves(moves, start);
+        gameState GameState = gameState(maze);
+        position result = GameState.performMoves(moves, start);
         maze.print(result);
         
         inputFile.close();
