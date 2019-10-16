@@ -15,31 +15,38 @@ class Stack {
         };
         Node* head;
     public:
-        Stack() {
-            head = NULL;
-        }
+        Stack();
         Stack(const Stack& original);
         ~Stack();
         bool isEmpty() const;
         int top() const;
         int pop();
         void push(int);
-
-       
+        void print();
 };
 
-void Stack::push(int data) {
-    
+
+Stack::Stack() {
+    this->head = nullptr;
+}
+
+Stack::Stack(const Stack& original) {
+
+}
+
+Stack::~Stack() {
+    cout << "Destructor called";
+}
+
+void Stack::push(int data){
+    Node* node = new Node();
+    node->data = data;
+    node->next = this->head;
+    this->head = node;
+    //this->length++;
 }
 
 
-
-/*void printList(Node* n) { 
-    while (n != NULL) { 
-        cout << n->data << " "; 
-        n = n->next; 
-    } 
-}*/
 
 /*
 bool Stack::isEmpty() {
@@ -81,6 +88,9 @@ bool compareStrings(string s1, string s2) {
 
 int main() {
     
+    Stack* s = new Stack();
+    delete s;
+
     /*Stack s;
     string command = "init";
     string arg;*/
