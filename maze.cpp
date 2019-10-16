@@ -7,36 +7,34 @@
 
 using namespace std;
 
-class position {
+class Position {
     private:
         int x, y;
 
     public:
-        position(int x1, int y1) {
-            x = x1; 
-            y = y1;
-        }
+        Position(int x1, int y1) : x(x1), y(y1) {}
+
         int getX() const { return x; }
         int getY() const { return y; }
 };
 
-class maze {
+class Maze {
     private:
         vector<string> line;
 
     public:
-        maze(vector<string> lines) { 
+        Maze(vector<string> lines) { 
             line = lines;
         }
-        bool isWall(position playercoordinates) { 
+        bool isWall(Position playercoordinates) { 
             return (line.at(playercoordinates.getX()).at(playercoordinates.getY()) == 'l');   
         }
-        void validateExit(position exitcoordinates) {
+        void validateExit(Position exitcoordinates) {
             if (line.at(exitcoordinates.getX()).at(exitcoordinates.getY()) == 'l') {
                 throw runtime_error("an error occurred: exit outside maze or off the path");
             }
         }
-        void print(position playerPosition, position endPosition, bool calculation) { 
+        void print(Position playerPosition, Position endPosition, bool calculation) { 
             for (int i = 0; i < line.size(); i++) {
                 for (int j = 0; j < line.at(i).length(); j++) {
                     if (i == playerPosition.getX() && j == playerPosition.getY()) {
@@ -62,40 +60,37 @@ class maze {
         }
 };
 
-class gameState {
+class GameState {
     private:
-        maze& mymaze;
+        Maze& mymaze;
     
     public:
-        gameState(maze maze1) : mymaze(maze1) {}
+        GameState(Maze maze1) : mymaze(maze1) {}
 
-        position performMoves(string moves, position coordinates) {
+        Position performMoves(const string moves, Position coordinates) {
             for (int i = 0; i < moves.length(); ++i) {
                 coordinates = performMove(moves.at(i), coordinates);
             }
             return coordinates;
         }
-        position performMove(char move, position coordinates) {
+        Position performMove(const char move, Position coordinates) {
             switch (move) {
                 case 'u':
-                    coordinates = position(coordinates.getX() - 1, coordinates.getY());
+                    coordinates = Position(coordinates.getX() - 1, coordinates.getY());
                     break;
                 case 'r':
-                    coordinates = position(coordinates.getX(), coordinates.getY() + 1);
+                    coordinates = Position(coordinates.getX(), coordinates.getY() + 1);
                     break;
                 case 'd':
-                    coordinates = position(coordinates.getX() + 1, coordinates.getY());
+                    coordinates = Position(coordinates.getX() + 1, coordinates.getY());
                     break;
                 case 'l':
-                    coordinates = position(coordinates.getX(), coordinates.getY() - 1);
+                    coordinates = Position(coordinates.getX(), coordinates.getY() - 1);
                     break;
                 default:
                     throw runtime_error("an error occurred: invalid move");
                     break;
             } 
-            //if (mymaze.isWall(coordinates)) {
-                //throw runtime_error("blablabla");
-            //}
             return coordinates;
         }
 };
@@ -119,57 +114,73 @@ void checkDimensions(string line, int& first, int& second) {
     }
 }
 
+//Opening file
+void handleFile(int argc, char *argv, ifstream& inputFile) {
+    string inFile = "";
+    if (argc == 2) {
+        inFile = argv;
+    }
+    else {
+        throw runtime_error("an error occurred: no input file name given");
+    }
+    inputFile.open(inFile);
+    if (!inputFile.is_open()) {
+        string error = "an error occurred: could not open input file ";
+        error.append(inFile);
+        throw runtime_error(error); 
+    }
+}
+
+//Creates a vector with the layout of the maze
+vector<string> mazeLayoutIntoVector(int height, int width, ifstream& inputFile) {
+    vector<string> lines;
+    string line;
+    for (int i = 0; i < height; ++i) {
+        getline(inputFile, line);
+        if (line.length() == width) {
+            lines.push_back(line);
+        }
+    }
+    if (lines.size() != height) {
+        throw runtime_error ("an error occurred: could not read maze layout");
+    }
+    return lines;
+}
+
+
 int main(int argc, char* argv[]) {
     try {
-        string inFile = "";
-        if (argc == 2) {
-            inFile = argv[1];
-        }
-        else {
-            throw runtime_error("an error occurred: no input file name given");
-        }
-    
         ifstream inputFile;
-        inputFile.open(argv[1]);
-        if (!inputFile.is_open()) {
-            string error = "an error occurred: could not open input file ";
-            error.append(argv[1]);
-            throw runtime_error(error); 
-        }
+        handleFile(argc, argv[1], inputFile);
 
+        //storing width and height
         string line;
         getline(inputFile, line);
         int height, width;
         checkDimensions(line, height, width);
 
-        vector<string> lines;
-        for (int i = 0; i < height; ++i) {
-            getline(inputFile, line);
-            if (line.length() == width) {
-                lines.push_back(line);
-            }
-        }
+        //Reading maze layout into the vector lines
+        vector<string> lines = mazeLayoutIntoVector(height, width, inputFile);
 
-        if (lines.size() != height) {
-            throw runtime_error ("an error occurred: could not read maze layout");
-        }
-
+        //storing begin, end and moves
         int x, y;   
         getline(inputFile, line);
         checkCoordinates(line, x, y);
-        position end(x, y); 
+        Position end(x, y); 
         getline(inputFile, line);
         checkCoordinates(line, x, y);
-        position start(x, y);
+        Position start(x, y);
         string moves;
         getline(inputFile, moves);
         
-        maze maze(lines);
+        //creating objects for the classes
+        Maze maze(lines);
         maze.validateExit(end);
-        gameState state(maze); 
-        gameState GameState = gameState(maze);
-        position result = GameState.performMoves(moves, start);
+        GameState state(maze); 
+        GameState gameState = GameState(maze);
+        Position result = gameState.performMoves(moves, start);
 
+        //Printing the maze start and end
         maze.print(start, end, false);
         cout << endl;
         if (maze.isWall(result)) {
