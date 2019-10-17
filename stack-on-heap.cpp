@@ -2,6 +2,7 @@
 #include<string>
 #include<iostream>
 #include<stdexcept>
+#include<limits>
 
 using namespace std;
 
@@ -22,13 +23,10 @@ class Stack {
         int top() const;
         int pop();
         void push(int);
-        void print();
 };
 
 
-Stack::Stack() {
-    this->head = nullptr;
-}
+Stack::Stack() : head(nullptr) {}
 
 Stack::Stack(const Stack& original) {
 
@@ -46,16 +44,21 @@ void Stack::push(int data){
  
 }
 
-void Stack::print(){
+/*void Stack::print(){
     Node* head = this->head;
+    cout << "[";
     while(head) {
-        cout << head->data << ",";
+        cout << head->data;
+        if (!isEmpty()) {
+            cout << ",";
+        }
         head = head->next;
     }
-}
+    cout << "]" << endl;
+}*/
 
 bool Stack::isEmpty() const {
-    return (this->head == nullptr);
+    return this->head == nullptr;
 }
 
 /*
@@ -68,26 +71,17 @@ int Stack::pop() {
         elements.erase(elements.begin());
         return temp;
     }   
-}
+}*/
 
-int Stack::top() {
-    if (elements.size() > 0) {
-        return elements.at(0);
+int Stack::top() const {
+    if (isEmpty()) {
+        throw runtime_error("error: stack is empty");
     } 
     else {
-        throw runtime_error("error: stack is empty");
+        return this->head->data;        
     }
 }
 
-
-
-bool compareStrings(string s1, string s2) {
-    if (s1.compare(s2) < 0) {
-        return true;
-    }
-    return false;
-}
-*/
 
 int main() {
     
@@ -98,10 +92,6 @@ int main() {
     const string LIST = "list";
     const string PUSH = "push";
     const string END = "end";
-
-    /*for (int i = 0; i < 5; ++i) {
-        stack->push(5);
-    }*/
 
     string arg;
 
@@ -115,27 +105,33 @@ int main() {
                 break;
             }
 
-            else if (command == "pop") {
+            else if (command == POP) {
                 //cout << s.pop() << endl;
             }
             
-            else if (command == "push") {
+            else if (command == PUSH) {
                 string arg;
                 cin >> arg;
                 stack->push(stoi(arg));
                 }
 
-            else if (command == "top") {
-                //cout << s.top() << endl;
+            else if (command == TOP) {
+                cout << stack->top() << endl;
             }
 
-            else if (command == "list") {
-                stack->print();
+            else if (command == LIST) {
+                //stack->print();
             }
             else {
                 cout << "error: invalid command" << endl;
             }
+
+            if (cin.eof()) {
+                cin.clear();
+                cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            }
         }
+
         catch (runtime_error& exception) {
             cout << exception.what() << endl;
         }
