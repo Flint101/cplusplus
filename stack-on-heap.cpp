@@ -43,19 +43,22 @@ void Stack::push(int data){
     node->data = data;
     node->next = this->head;
     this->head = node;
-    //this->length++;
+ 
 }
 
+void Stack::print(){
+    Node* head = this->head;
+    while(head) {
+        cout << head->data << ",";
+        head = head->next;
+    }
+}
 
+bool Stack::isEmpty() const {
+    return (this->head == nullptr);
+}
 
 /*
-bool Stack::isEmpty() {
-    if (elements.size() == 0) {
-        return true;
-    }
-    return false;
-}
-
 int Stack::pop() {
     if (elements.size() == 0) {
         throw runtime_error("error: stack is emtpy");
@@ -88,36 +91,46 @@ bool compareStrings(string s1, string s2) {
 
 int main() {
     
-    Stack* s = new Stack();
-    delete s;
+    Stack* stack = new Stack();
 
-    /*Stack s;
-    string command = "init";
-    string arg;*/
+    const string POP = "pop";
+    const string TOP = "top";
+    const string LIST = "list";
+    const string PUSH = "push";
+    const string END = "end";
 
+    /*for (int i = 0; i < 5; ++i) {
+        stack->push(5);
+    }*/
 
+    string arg;
 
-    /*while (command != "end" && !cin.eof()) {
+    while (true) {
+        string command;
+        cout << "stack> " << endl;
         try {
-            cout << "stack> " << endl;
             cin >> command;
 
-            if (command == "pop") {
-                cout << s.pop() << endl;
+            if (cin.eof() || command == END) {
+                break;
+            }
+
+            else if (command == "pop") {
+                //cout << s.pop() << endl;
             }
             
             else if (command == "push") {
+                string arg;
                 cin >> arg;
-               // cout << "Attempting to convert " << arg << " to number" << endl;
-                s.push(stoi(arg));
-            }
+                stack->push(stoi(arg));
+                }
 
             else if (command == "top") {
-                cout << s.top() << endl;
+                //cout << s.top() << endl;
             }
 
             else if (command == "list") {
-                s.Print();
+                stack->print();
             }
             else {
                 cout << "error: invalid command" << endl;
@@ -129,8 +142,8 @@ int main() {
         catch (invalid_argument& exception) {
             cout << "error: not a number" << endl;
         }
-    }*/
+    }
    
-
+    delete stack;
     return 0;
 }
