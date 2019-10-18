@@ -1,7 +1,6 @@
 .vscode/launch.json
 .vscode/settings.json
-a.out
-.vscode/launch.json
-.vscode/launch.json
-.vscode/settings.json
 .vscode/c_cpp_properties.json
+*
+!*/
+!*.*
