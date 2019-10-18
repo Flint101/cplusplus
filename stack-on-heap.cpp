@@ -28,50 +28,28 @@ class Stack {
 
 Stack::Stack() : head(nullptr) {}
 
-Stack::Stack(const Stack& original) {
-
+Stack::Stack(const Stack& original) : head(nullptr){
+    Node* node = original.head;
+    while (node != nullptr) {
+        push(node->data);
+        node = node->next;
+    }
 }
 
 Stack::~Stack() {
-    cout << "Destructor called";
+    //cout << "Destructor called";
 }
 
 void Stack::push(int data){
-    Node* node = new Node();
-    node->data = data;
-    node->next = this->head;
-    this->head = node;
- 
+    Node* node = new Node();        // making a new node on the heap
+    node->data = data;            // copy over data to new node
+    node->next = this->head;      // copy the pointer from head to next, so head is pointing to 2 nodes now
+    this->head = node;            // make pointer ..   
 }
-
-/*void Stack::print(){
-    Node* head = this->head;
-    cout << "[";
-    while(head) {
-        cout << head->data;
-        if (!isEmpty()) {
-            cout << ",";
-        }
-        head = head->next;
-    }
-    cout << "]" << endl;
-}*/
 
 bool Stack::isEmpty() const {
     return this->head == nullptr;
 }
-
-/*
-int Stack::pop() {
-    if (elements.size() == 0) {
-        throw runtime_error("error: stack is emtpy");
-    }
-    else {
-        int temp = elements.at(0); 
-        elements.erase(elements.begin());
-        return temp;
-    }   
-}*/
 
 int Stack::top() const {
     if (isEmpty()) {
@@ -82,6 +60,33 @@ int Stack::top() const {
     }
 }
 
+int Stack::pop() {
+    if (isEmpty()) {
+        throw runtime_error("error: stack is emtpy");
+    }
+    else {
+        int temp = this->head->data; 
+        Node* placeholder = new Node();
+        placeholder = head;
+        head = head->next;
+        delete placeholder; 
+        return temp;
+    }   
+}
+
+void print(){
+    Stack stack;
+    Node* head = this->head;
+    cout << "[";
+    while(head) {
+        cout << head->data;
+        if (!isEmpty()) {
+            cout << ",";
+        }
+        head = head->next;
+    }
+    cout << "]" << endl;
+}
 
 int main() {
     
@@ -106,7 +111,7 @@ int main() {
             }
 
             else if (command == POP) {
-                //cout << s.pop() << endl;
+                cout << stack->pop() << endl;
             }
             
             else if (command == PUSH) {
