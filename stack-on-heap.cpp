@@ -25,34 +25,30 @@ class Stack {
         void push(int);
 };
 
-
 Stack::Stack() : head(nullptr) {}
 
 Stack::Stack(const Stack& original) : head(nullptr) {
-    Node* current = original.head;
-    this->head = current;
-    Node* pre = current;
+    Node* tmp = original.head;
+    Node* current = new Node();
+    head = new Node();
+    head->data = tmp->data;
+    head->next = nullptr;
+    current = head;
+    tmp = tmp->next;
 
-    while (current->next != nullptr) {
+    while (tmp != nullptr) {
+        current->next = new Node();
         current = current->next;
-        Node* newnode = new Node();
-        newnode->data = current->data; 
-
-        pre->next = newnode; 
-        pre = newnode;      
+        current->data = tmp->data; 
+        current->next = nullptr;
+        tmp = tmp->next;      
     }
 }
 
-/*Stack::Stack(const Stack& original) : head(nullptr){
-    Node* node = original.head;
-    while (node != nullptr) {
-        push(node->data);
-        node = node->next;
-    }
-}*/
-
 Stack::~Stack() {
-    //cout << "Destructor called";
+    while (!this->isEmpty()) {
+        this->pop();
+    }
 }
 
 //Adding node and data to the head of the linked list
@@ -81,7 +77,7 @@ int Stack::top() const {
 //Returning top value and deleting first node 
 int Stack::pop() {
     if (isEmpty()) {
-        throw runtime_error("error: stack is emtpy");
+        throw runtime_error("error: stack is empty");
     }
     else {
         int temp = this->head->data; 
@@ -159,7 +155,6 @@ int main() {
             cout << "error: not a number" << endl;
         }
     }
-   
     delete stack;
     return 0;
 }
