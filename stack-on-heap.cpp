@@ -30,6 +30,11 @@ Stack::Stack() : head(nullptr) {}
 Stack::Stack(const Stack& original) : head(nullptr) {
     Node* tmp = original.head;
     Node* current = new Node();
+    
+    if (tmp == nullptr) {
+        return;
+    }
+ 
     head = new Node();
     head->data = tmp->data;
     head->next = nullptr;
