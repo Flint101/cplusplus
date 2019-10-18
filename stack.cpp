@@ -2,111 +2,97 @@
 #include<string>
 #include<iostream>
 #include<stdexcept>
-
+#include<limits>
 using namespace std;
-
 class Stack {
     public:
         bool isEmpty();
         // returns true if stack has no elements stored
-
         int top();
         // returns element from top of the stack
         // throws runtime_error("stack is empty")
-
         int pop();
         // returns element from top of the stack and removes it
         // throws runtime_error("stack is empty")
-
         void push(int);
         // puts a new element on top of the stack
-
-        void Print() {
-            cout << "[";
-            for (int i = 0; i < elements.size(); ++i)
-            {
-                cout << elements.at(i);
-                if (i < elements.size() - 1) {
-                    cout << ",";
-                }
-            }
-            cout << "]" << endl;
-        }
-
      private:
         vector<int> elements;
 };
-
+//Checks if vector is empty
 bool Stack::isEmpty() {
-    if (elements.size() == 0) {
-        return true;
-    }
-    return false;
+    return elements.size() == 0;
 }
-
+//Returning top value and removing it
 int Stack::pop() {
-    if (elements.size() == 0) {
-        throw runtime_error("error: stack is emtpy");
-    }
-    else {
-        int temp = elements.at(0); 
-        elements.erase(elements.begin());
-        return temp;
-    }   
-}
-
-int Stack::top() {
-    if (elements.size() > 0) {
-        return elements.at(0);
-    } 
-    else {
+    if (isEmpty()) {
         throw runtime_error("error: stack is empty");
     }
+ 
+    int temp = elements.at(0); 
+    elements.erase(elements.begin());
+    return temp;
 }
-
+//Printing all current elements of the 'stack'
+void printElements(Stack s) {
+    cout << "[";
+    while (!s.isEmpty()) {
+        cout << s.pop();
+        if (!s.isEmpty()) {
+            cout << ",";
+        }
+    }
+    cout << "]" << endl;
+}
+//Returning top value 
+int Stack::top() {
+    if (isEmpty()) {
+        throw runtime_error("error: stack is empty");
+    }
+    return elements.at(0);
+}
+//Pushing elements into the left side of the vector
 void Stack::push(int input) {
     elements.insert(elements.begin(), input);
-    //cout << input << " pushed in to stack \n";
 }
-
-bool compareStrings(string s1, string s2) {
-    if (s1.compare(s2) < 0) {
-        return true;
-    }
-    return false;
-}
-
-
 int main() {
-    
     Stack s;
-    string command = "init";
-    string arg;
-
-    while (command != "end" && !cin.eof()) {
+    
+    const string POP = "pop";
+    const string TOP = "top";
+    const string LIST = "list";
+    const string PUSH = "push";
+    const string END = "end";
+    
+    
+    while (true) {
+        string command;
+        cout << "stack> " << endl;
         try {
-            cout << "stack> " << endl;
             cin >> command;
-
-            if (command == "pop") {
+            if (cin.eof() || command == END) {
+                break;
+            }
+            else if (command == POP) {
                 cout << s.pop() << endl;
             }
-            
-            else if (command == "push") {
+            else if (command == PUSH) {
+                string arg;
                 cin >> arg;
-               // cout << "Attempting to convert " << arg << " to number" << endl;
                 s.push(stoi(arg));
             }
-
-            else if (command == "top") {
+            else if (command == TOP) {
                 cout << s.top() << endl;
             }
-
-            else if (command == "list") {
-                s.Print();
+            else if (command == LIST) {
+                printElements(s);
             }
             else {
                 cout << "error: invalid command" << endl;
+            }
+            if (cin.eof()) {
+                cin.clear();
+                cin.ignore(numeric_limits<streamsize>::max(), '\n');
             }
         }
         catch (runtime_error& exception) {
@@ -116,7 +102,5 @@ int main() {
             cout << "error: not a number" << endl;
         }
     }
-   
-
     return 0;
 }

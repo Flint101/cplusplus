@@ -28,29 +28,47 @@ class Stack {
 
 Stack::Stack() : head(nullptr) {}
 
-Stack::Stack(const Stack& original) : head(nullptr){
+Stack::Stack(const Stack& original) : head(nullptr) {
+    Node* current = original.head;
+    this->head = current;
+    Node* pre = current;
+
+    while (current->next != nullptr) {
+        current = current->next;
+        Node* newnode = new Node();
+        newnode->data = current->data; 
+
+        pre->next = newnode; 
+        pre = newnode;      
+    }
+}
+
+/*Stack::Stack(const Stack& original) : head(nullptr){
     Node* node = original.head;
     while (node != nullptr) {
         push(node->data);
         node = node->next;
     }
-}
+}*/
 
 Stack::~Stack() {
     //cout << "Destructor called";
 }
 
+//Adding node and data to the head of the linked list
 void Stack::push(int data){
-    Node* node = new Node();        // making a new node on the heap
-    node->data = data;            // copy over data to new node
-    node->next = this->head;      // copy the pointer from head to next, so head is pointing to 2 nodes now
-    this->head = node;            // make pointer ..   
+    Node* node = new Node();        
+    node->data = data;          
+    node->next = this->head;     
+    this->head = node;        
 }
 
+//Checks if linked list is empty
 bool Stack::isEmpty() const {
     return this->head == nullptr;
 }
 
+//Returning first value in first Node
 int Stack::top() const {
     if (isEmpty()) {
         throw runtime_error("error: stack is empty");
@@ -60,6 +78,7 @@ int Stack::top() const {
     }
 }
 
+//Returning top value and deleting first node 
 int Stack::pop() {
     if (isEmpty()) {
         throw runtime_error("error: stack is emtpy");
@@ -74,16 +93,14 @@ int Stack::pop() {
     }   
 }
 
-void print(){
-    Stack stack;
-    Node* head = this->head;
+//Printing all current elements of the 'stack'
+void printElements(Stack stack) {
     cout << "[";
-    while(head) {
-        cout << head->data;
-        if (!isEmpty()) {
+    while (!stack.isEmpty()) {
+        cout << stack.pop();
+        if (!stack.isEmpty()) {
             cout << ",";
         }
-        head = head->next;
     }
     cout << "]" << endl;
 }
@@ -91,14 +108,12 @@ void print(){
 int main() {
     
     Stack* stack = new Stack();
-
+    
     const string POP = "pop";
     const string TOP = "top";
     const string LIST = "list";
     const string PUSH = "push";
     const string END = "end";
-
-    string arg;
 
     while (true) {
         string command;
@@ -125,7 +140,7 @@ int main() {
             }
 
             else if (command == LIST) {
-                //stack->print();
+                printElements(*stack);
             }
             else {
                 cout << "error: invalid command" << endl;
